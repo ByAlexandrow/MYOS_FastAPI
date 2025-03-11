@@ -1,0 +1,78 @@
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ url_for('static', path='css/includes/header.css') }}">
+{% endblock %}
+<header class="header">
+    <nav class="navbar navbar-expand nav-ex-header">
+        <div class="container header-container">
+            <a class="navbar-brand-header" href="{{ url_for('homepage:index') }}">
+                <img src="{{ url_for('static', path='img/logo/logo.svg') }}" alt="Mystery Of Story" class="header-logo">
+                <span class="title-logo-header">Anthology of Times</span>
+            </a>
+            <div class="menu-links">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="header-nav-item">
+                        <a class="nav-link" href="...">
+                            О проекте
+                        </a>
+                    </li>
+                    <li class="header-nav-item">
+                        <a class="nav-link {% if view_name == 'articles:all_categories' %}active{% endif %}" href="...">
+                            Категории
+                        </a>
+                    </li>
+                    <li class="header-nav-item">
+                        <a class="nav-link {% if view_name == 'articles:new_articles' %}active{% endif %}" href="...">
+                            Новое
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="search-field">
+                <form>
+                    <input type="text" placeholder="Искать здесь...">
+                    <button type="submit" class="search-btn">
+                        <img src="{{ url_for('static', path='img/buttons/100.png') }}" alt="?" class="search-img">
+                    </button>
+                </form>
+            </div>
+            <div class="header-donation">
+                <button type="button" class="btn header-donation" data-bs-toggle="modal" data-bs-target="#donationModal">Поддержать</button>
+            </div>
+        </div>
+    </nav>
+</header>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var aboutProjectLink = document.getElementById('about-project-link');
+        if (aboutProjectLink) {
+            aboutProjectLink.addEventListener('click', function(event) {
+                event.preventDefault();
+                var targetUrl = this.href;
+                var targetId = targetUrl.split('#')[1];
+
+                if (window.location.pathname !== "...") {
+                    window.location.href = targetUrl;
+                } else {
+                    var targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            });
+        }
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggleMenuIcon = document.querySelector('.toggle-menu-icon');
+        const menuLinks = document.querySelector('.menu-links');
+    
+        toggleMenuIcon.addEventListener('click', function() {
+            if (menuLinks.style.display === 'block') {
+                menuLinks.style.display = 'none';
+            } else {
+                menuLinks.style.display = 'block';
+            }
+        });
+    });
+</script>
