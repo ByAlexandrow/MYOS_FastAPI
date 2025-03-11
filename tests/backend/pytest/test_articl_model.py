@@ -11,6 +11,7 @@ async def test_create_article(fixture_create_test_article):
     assert article.title == 'Test Article'
     assert article.cover_img == 'path/to/article_img.jpg'
     assert article.description == 'This is a test article!'
+    assert article.pdf == 'path/to/the/pdf_file.pdf'
     assert article.content == 'Here will be a content for the article!'
 
 
@@ -23,6 +24,7 @@ async def test_read_article(db_session, fixture_create_test_article):
     assert db_article.title == 'Test Article'
     assert db_article.cover_img == 'path/to/article_img.jpg'
     assert db_article.description == 'This is a test article!'
+    assert db_article.pdf == 'path/to/the/pdf_file.pdf'
     assert db_article.content == 'Here will be a content for the article!'
 
 

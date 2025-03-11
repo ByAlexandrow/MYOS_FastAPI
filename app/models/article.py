@@ -23,6 +23,7 @@ class Article(Base):
     cover_img = Column(String, nullable=False)
     description = Column(String, nullable=False)
     content = Column(Text, index=True)
+    pdf = Column(String, nullable=True)
     category_id = Column(Integer, ForeignKey('categories.id'))
 
     categories = relationship('Category', back_populates='articles_category')
