@@ -18,13 +18,13 @@ async def create_tables(engine: AsyncEngine):
 app = FastAPI()
 
 
-# @asynccontextmanager
-# async def lifespan(app: FastAPI):
-#     await create_tables(engine)
-
-@app.on_event('startup')
-async def on_startup():
+@asynccontextmanager
+async def lifespan(app: FastAPI):
     await create_tables(engine)
+
+# @app.on_event('startup')
+# async def on_startup():
+#     await create_tables(engine)
 
 
 setup_admin(app)
