@@ -9,10 +9,11 @@ from app.models.user import SuperUser
 
 def setup_admin(app):
     class SuperUserAdmin(ModelView, model=SuperUser):
-        column_list = [SuperUser.id, SuperUser.username]
-        column_searchable_list = [SuperUser.username]
+        column_list = [SuperUser.id, SuperUser.username, SuperUser.is_admin]
+        column_searchable_list = [SuperUser.username, SuperUser.is_admin]
         column_labels = {
             SuperUser.username: 'Имя Админа',
+            SuperUser.is_admin: 'Админ',
         }
         name = 'Админ'
         name_plural = 'Админы'
@@ -33,16 +34,17 @@ def setup_admin(app):
 
     class ArticleAdmin(ModelView, model=Article):
         column_list = [
-            Article.id, Article.title, Article.description, Article.category_id, Article.is_published
+            Article.id, Article.title, Article.description, Article.category, Article.is_published
         ]
-        column_searchable_list = [Article.title, Article.category_id, Article.is_published]
+        column_searchable_list = [Article.title, Article.category, Article.is_published]
+        column_filters = [Article.title, Article.is_published, Article.category]
         column_labels = {
             Article.title: 'Название',
             Article.cover_img: 'Титульная картинка',
             Article.description: 'Описание',
             Article.content: 'Текст',
             Article.pdf: 'PDF',
-            Article.category_id: 'Категория',
+            Article.category: 'Категория',
             Article.is_published: 'Публикация',
         }
         name = 'Статья'
@@ -50,11 +52,11 @@ def setup_admin(app):
 
 
     class CarouselAdmin(ModelView, model=Carousel):
-        column_list = [Carousel.id, Carousel.title, Carousel.article_id, Carousel.is_published]
+        column_list = [Carousel.id, Carousel.title, Carousel.article, Carousel.is_published]
         column_searchable_list = [Carousel.title]
         column_labels = {
             Carousel.title: 'Название',
-            Carousel.article_id: 'Статья',
+            Carousel.article: 'Статья',
             Carousel.is_published: 'Публикация',
         }
         name = 'Карусель'

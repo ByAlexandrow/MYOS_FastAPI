@@ -1,8 +1,8 @@
 """create models tables
 
-Revision ID: c6400be3b64a
-Revises: e35defe47e51
-Create Date: 2025-03-12 15:19:10.444458
+Revision ID: a5e7beff7bad
+Revises: 
+Create Date: 2025-03-12 15:46:17.709700
 
 """
 from typing import Sequence, Union
@@ -12,8 +12,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'c6400be3b64a'
-down_revision: Union[str, None] = 'e35defe47e51'
+revision: str = 'a5e7beff7bad'
+down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -56,6 +56,8 @@ def upgrade() -> None:
     sa.Column('pdf', sa.String(), nullable=True),
     sa.Column('is_published', sa.Boolean(), nullable=True),
     sa.Column('category_id', sa.Integer(), nullable=True),
+    sa.Column('author_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['author_id'], ['admins.id'], ),
     sa.ForeignKeyConstraint(['category_id'], ['categories.id'], ),
     sa.PrimaryKeyConstraint('id')
     )

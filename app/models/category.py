@@ -13,4 +13,7 @@ class Category(Base):
     description = Column(String, index=False)
     is_published = Column(Boolean, index=True, default=False)
 
-    articles_category = relationship('Article', back_populates = 'categories')
+    article = relationship('Article', back_populates='category')
+
+    def __repr__(self):
+        return self.title

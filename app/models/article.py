@@ -15,6 +15,9 @@ class Carousel(Base):
 
     article = relationship('Article', back_populates='carousel')
 
+    def __repr__(self):
+        return self.title
+
 
 class Article(Base):
     __tablename__ = 'articles'
@@ -27,6 +30,11 @@ class Article(Base):
     pdf = Column(String, nullable=True)
     is_published = Column(Boolean, index=True, default=False)
     category_id = Column(Integer, ForeignKey('categories.id'))
+    author_id = Column(Integer, ForeignKey('admins.id'))
 
-    categories = relationship('Category', back_populates='articles_category')
+    category = relationship('Category', back_populates='article')
     carousel = relationship('Carousel', back_populates='article', uselist=False)
+    author = relationship('SuperUser', back_populates='article')
+
+    def __repr__(self):
+        return self.title
