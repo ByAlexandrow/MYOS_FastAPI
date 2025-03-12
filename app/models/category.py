@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, Boolean
 from sqlalchemy.orm import relationship
 
 from app.database import Base
@@ -11,5 +11,6 @@ class Category(Base):
     title = Column(String, index=True)
     cover_img = Column(String, nullable=False)
     description = Column(String, index=False)
+    is_published = Column(Boolean, index=True, default=False)
 
     articles_category = relationship('Article', back_populates = 'categories')

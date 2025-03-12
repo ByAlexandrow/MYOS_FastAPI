@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
 from app.database import Base
-from app.models.admin import Admin
+from app.models.user import SuperUser
 from app.models.article import Article, Carousel
 from app.models.category import Category
 
@@ -86,12 +86,13 @@ async def fixture_create_test_carousel(db_session, fixture_create_test_article):
 @pytest.fixture(scope='function')
 async def fixture_create_test_admin(db_session):
     async with db_session as session:
-        test_admin = Admin(
+        test_admin = SuperUser(
             username='Username',
             first_name='Name',
             last_name='Surname',
             email='admin@mail.ru',
-            password='123456789'
+            password='123456789',
+            is_admin=True
         )
         session.add(test_admin)
         await session.commit()
