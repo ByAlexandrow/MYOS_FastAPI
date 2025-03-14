@@ -1,3 +1,5 @@
+import os
+
 from sqladmin import Admin, ModelView
 
 from app.database import engine
@@ -5,6 +7,8 @@ from app.database import engine
 from app.models.category import Category
 from app.models.article import Article, Carousel
 from app.models.user import SuperUser
+
+from app.forms.category import CategoryForm
 
 
 def setup_admin(app):
@@ -28,8 +32,17 @@ def setup_admin(app):
             Category.description: 'Описание',
             Category.is_published: 'Публикация',
         }
+        form = CategoryForm
         name = 'Категория'
         name_plural = 'Категории'
+
+        async def validate_cover_img(self, value):
+            # Обработка загрузки файла
+            file = await value.read()
+            file_path = os.path.join("uploads", value.filename)
+            with open(file_path, "wb") as f:
+                f.write(file)
+            return file_path
 
 
     class ArticleAdmin(ModelView, model=Article):
