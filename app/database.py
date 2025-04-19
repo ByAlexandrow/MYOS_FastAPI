@@ -10,7 +10,8 @@ SessionLocal = sessionmaker(
     autocommit=False,
     autoflush=False,
     bind=engine,
-    class_=AsyncSession
+    class_=AsyncSession,
+    expire_on_commit=True
 )
 
 Base = declarative_base()

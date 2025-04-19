@@ -1,40 +1,27 @@
-from sqlalchemy import Column, Integer, String, Boolean, Text, ForeignKey
-from sqlalchemy.orm import relationship
+from typing import Optional, List
+from datetime import datetime
+
+from sqlalchemy import Integer, String, Text, Boolean, ForeignKey, DateTime
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.sql import func
 
 from app.database import Base
 
 
-class Carousel(Base):
-    __tablename__ = 'carousels'
-
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, nullable=False)
-    url = Column(String, nullable=False)
-    is_published = Column(Boolean, index=True, default=False)
-    article_id = Column(Integer, ForeignKey('articles.id'))
-
-    article = relationship('Article', back_populates='carousel')
-
-    def __repr__(self):
-        return self.title
-
-
 class Article(Base):
+    """Модель статьи."""
     __tablename__ = 'articles'
 
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, index=True, nullable=False)
-    cover_img = Column(String, nullable=False)
-    description = Column(String, nullable=False)
-    content = Column(Text, index=True)
-    pdf = Column(String, nullable=True)
-    is_published = Column(Boolean, index=True, default=False)
-    category_id = Column(Integer, ForeignKey('categories.id'))
-    author_id = Column(Integer, ForeignKey('admins.id'))
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True, comment='ID статьи')
+    title: Mapped[str] = mapped_column(String(25), unique=True, index=True, comment='Название статьи')
+    title_img: Mapped[str] = mapped_column(String(256), comment='Титульная картинка')
+    description: Mapped[str] = mapped_column(String(50), comment='Краткое описание статьи')
+    content: Mapped[str] = mapped_column(Text, comment='Содержание статьи')
+    author_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'), comment='ID автора')
+    author = relationship('User', back_populates='articles')
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), comment='Дата создания статьи')
+    updated_on: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), onupdate=func.now(), comment='Дата обновления статьи')
+    is_published: Mapped[bool] = mapped_column(Boolean, default=False, comment='Опубликовать статью')
 
-    category = relationship('Category', back_populates='article')
-    carousel = relationship('Carousel', back_populates='article', uselist=False)
-    author = relationship('SuperUser', back_populates='article')
-
-    def __repr__(self):
-        return self.title
+    def __repr__(self) -> str:
+        return f'{self.title}'

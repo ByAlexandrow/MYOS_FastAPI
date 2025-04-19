@@ -1,83 +1,85 @@
-import os
-
+from datetime import datetime
 from sqladmin import Admin, ModelView
 
+from app.models.user import User
+from app.models.article import Article
 from app.database import engine
 
-from app.models.category import Category
-from app.models.article import Article, Carousel
-from app.models.user import SuperUser
 
-from app.forms.category import CategoryForm
-
-
-def setup_admin(app):
-    class SuperUserAdmin(ModelView, model=SuperUser):
-        column_list = [SuperUser.id, SuperUser.username, SuperUser.is_admin]
-        column_searchable_list = [SuperUser.username, SuperUser.is_admin]
-        column_labels = {
-            SuperUser.username: 'Имя Админа',
-            SuperUser.is_admin: 'Админ',
-        }
-        name = 'Админ'
-        name_plural = 'Админы'
+def format_datetime(value: datetime | None) -> str:
+    """Форматирование даты для отображения в админ-панели."""
+    return value.strftime('%Y-%m-%d %H:%M') if value else ''
 
 
-    class CategoryAdmin(ModelView, model=Category):
-        column_list = [Category.id, Category.title, Category.description, Category.is_published]
-        column_searchable_list = [Category.title, Category.is_published]
-        column_labels = {
-            Category.title: 'Название',
-            Category.cover_img: 'Титульная картинка',
-            Category.description: 'Описание',
-            Category.is_published: 'Публикация',
-        }
-        form = CategoryForm
-        name = 'Категория'
-        name_plural = 'Категории'
+class UserAdmin(ModelView, model=User):
+    """Админ-панель для управления пользователями."""
+    name = 'Пользователь'
+    name_plural = 'Пользователи'
+    icon = 'fa-solid fa-user'
 
-        async def validate_cover_img(self, value):
-            # Обработка загрузки файла
-            file = await value.read()
-            file_path = os.path.join("uploads", value.filename)
-            with open(file_path, "wb") as f:
-                f.write(file)
-            return file_path
+    column_labels = {
+        'id': 'ID',
+        'username': 'Логин',
+        'email': 'Email',
+        'hashed_password': 'Парль',
+        'bio': 'О себе',
+        'is_admin': 'Администратор',
+        'created_at': 'Дата регистрации',
+        'articles': 'Статьи'
+    }
 
-
-    class ArticleAdmin(ModelView, model=Article):
-        column_list = [
-            Article.id, Article.title, Article.description, Article.category, Article.is_published
-        ]
-        column_searchable_list = [Article.title, Article.category, Article.is_published]
-        column_filters = [Article.title, Article.is_published, Article.category]
-        column_labels = {
-            Article.title: 'Название',
-            Article.cover_img: 'Титульная картинка',
-            Article.description: 'Описание',
-            Article.content: 'Текст',
-            Article.pdf: 'PDF',
-            Article.category: 'Категория',
-            Article.is_published: 'Публикация',
-        }
-        name = 'Статья'
-        name_plural = 'Статьи'
+    column_list = ['username', 'email', 'is_admin']
+    column_searchable_list = ['username', 'email']
+    column_sortable_list = ['username', 'created_at']
+    column_formatters = {
+        'created_at': lambda m, _: format_datetime(m.created_at),
+        'is_admin': lambda m, _: '✅' if m.is_admin else '❌'
+    }
 
 
-    class CarouselAdmin(ModelView, model=Carousel):
-        column_list = [Carousel.id, Carousel.title, Carousel.article, Carousel.is_published]
-        column_searchable_list = [Carousel.title]
-        column_labels = {
-            Carousel.title: 'Название',
-            Carousel.article: 'Статья',
-            Carousel.is_published: 'Публикация',
-        }
-        name = 'Карусель'
-        name_plural = 'Карусели'
+class ArticleAdmin(ModelView, model=Article):
+    """Админ-панель для управления статьями."""
+    name = 'Статья'
+    name_plural = 'Статьи'
+    icon = 'fa-solid fa-newspaper'
+
+    column_labels = {
+        'id': 'ID',
+        'title': 'Название',
+        'title_img': 'Титульная картинка',
+        'description': 'Краткое описание',
+        'content': 'Содержание',
+        'author': 'Автор',
+        'author_id': 'ID автора',
+        'created_at': 'Дата создания',
+        'updated_on': 'Дата обновления',
+        'is_published': 'Опубликовано'
+    }
+
+    column_list = [
+        'title', 
+        'author', 
+        'is_published',
+        'created_at'
+    ]
+    column_searchable_list = ['title']
+    column_sortable_list = ['title', 'created_at']
+    column_formatters = {
+        'created_at': lambda m, _: format_datetime(m.created_at),
+        'updated_on': lambda m, _: format_datetime(m.updated_on),
+        'author': lambda m, _: m.author.username if m.author else "Администратор",
+        'is_published': lambda m, _: '✅' if m.is_published else '❌'
+    }
 
 
-    admin = Admin(app, engine)
-    admin.add_view(SuperUserAdmin)
-    admin.add_view(CategoryAdmin)
+def init_admin(app):
+    """Инициализация админ-панели."""
+    admin = Admin(
+        app=app,
+        engine=engine,
+        title="Админ-панель",
+        base_url="/admin",
+        templates_dir="templates/admin"
+    )
+    admin.add_view(UserAdmin)
     admin.add_view(ArticleAdmin)
-    admin.add_view(CarouselAdmin)
