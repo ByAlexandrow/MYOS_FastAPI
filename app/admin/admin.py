@@ -77,9 +77,11 @@ def init_admin(app):
     admin = Admin(
         app=app,
         engine=engine,
-        title="Админ-панель",
-        base_url="/admin",
-        templates_dir="templates/admin"
+        title='Admin Work Panel',
+        base_url='/admin',
+        templates_dir='templates/admin',
+        logo_url='/static/img/logo/logo.svg',
+        favicon_url="/static/img/favicon/favicon.ico"
     )
     admin.add_view(UserAdmin)
     admin.add_view(ArticleAdmin)

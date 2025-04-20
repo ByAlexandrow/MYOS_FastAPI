@@ -1,4 +1,3 @@
-from typing import Optional, List
 from datetime import datetime
 
 from sqlalchemy import Integer, String, Text, Boolean, ForeignKey, DateTime
@@ -25,3 +24,6 @@ class Article(Base):
 
     def __repr__(self) -> str:
         return f'{self.title}'
+
+
+from app.models.user import User

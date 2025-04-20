@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional
 from datetime import datetime
 
 from sqlalchemy import Integer, String, Text, Boolean, DateTime
@@ -24,3 +24,6 @@ class User(Base):
 
     def __repr__(self) -> str:
         return f'{self.username}'
+
+
+from app.models.article import Article
