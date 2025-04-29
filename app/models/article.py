@@ -21,7 +21,7 @@ class Article(Base):
     author_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'), comment='ID автора')
     author = relationship('User', back_populates='articles')
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), comment='Дата создания статьи')
-    updated_on: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), onupdate=func.now(), comment='Дата обновления статьи')
+    updated_on: Mapped[bool] = mapped_column(Boolean, default=False, comment='Обновление статьи')
     is_published: Mapped[bool] = mapped_column(Boolean, default=False, comment='Опубликовать статью')
 
     def __repr__(self) -> str:

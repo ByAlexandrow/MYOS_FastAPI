@@ -60,6 +60,7 @@ async def test_article(db_session, test_user):
         audio='path/media/articles/audio/audio.mp3',
         video='path/media/articles/video/video.mp4',
         author_id=test_user.id,
+        updated_on=False,
         is_published=True
     )
     db_session.add(article)
