@@ -10,6 +10,7 @@ async def test_create_user(test_user):
     """Test async function of creating user model."""
     assert test_user.id is not None
     assert test_user.username == 'UserName'
+    assert test_user.avatar == 'path/media/user/images/user_avatar.png'
     assert test_user.email == 'user@email.com'
     assert test_user.hashed_password == 'user_hashed_password'
     assert test_user.bio == 'User bio field'

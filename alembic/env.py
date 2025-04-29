@@ -5,9 +5,8 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from app.models.category import Category
-from app.models.article import Article, Carousel
-from app.models.user import SuperUser
+from app.models.article import Article
+from app.models.user import User
 
 from app.database import Base
 

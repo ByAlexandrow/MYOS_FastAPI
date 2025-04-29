@@ -39,6 +39,7 @@ async def db_session(setup_db):
 async def test_user(db_session):
     user = User(
         username='UserName',
+        avatar='path/media/user/images/user_avatar.png',
         email='user@email.com',
         hashed_password='user_hashed_password',
         bio='User bio field',
@@ -54,9 +55,11 @@ async def test_user(db_session):
 async def test_article(db_session, test_user):
     article = Article(
         title='Article title',
-        title_img='path/to/title_img.jpg',
+        title_img='path/media/articles/images/title_img.png',
         description='Article description',
         content='Article content',
+        audio='path/media/articles/audio/audio.mp3',
+        video='path/media/articles/video/video.mp4',
         author_id=test_user.id,
         is_published=True
     )

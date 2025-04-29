@@ -13,9 +13,11 @@ class Article(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True, comment='ID статьи')
     title: Mapped[str] = mapped_column(String(25), unique=True, index=True, comment='Название статьи')
-    title_img: Mapped[str] = mapped_column(String(256), comment='Титульная картинка')
+    title_img: Mapped[str] = mapped_column(String(255), comment='Титульная картинка')
     description: Mapped[str] = mapped_column(String(50), comment='Краткое описание статьи')
     content: Mapped[str] = mapped_column(Text, comment='Содержание статьи')
+    audio: Mapped[str] = mapped_column(String(255), nullable=True, comment='Аудио-подкаст')
+    video: Mapped[str] = mapped_column(String(255), nullable=True, comment='Видео-подкаст')
     author_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'), comment='ID автора')
     author = relationship('User', back_populates='articles')
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), comment='Дата создания статьи')

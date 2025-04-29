@@ -5,6 +5,17 @@ from app.models.user import User
 from app.models.article import Article
 from app.database import engine
 
+from fastapi import Request
+from sqladmin import ModelView
+from wtforms import FileField
+from pathlib import Path
+import os
+import uuid
+from PIL import Image
+from io import BytesIO
+from typing import Dict, Any
+from typing import Optional
+
 
 def format_datetime(value: datetime | None) -> str:
     """Форматирование даты для отображения в админ-панели."""
@@ -19,7 +30,8 @@ class UserAdmin(ModelView, model=User):
 
     column_labels = {
         'id': 'ID',
-        'username': 'Логин',
+        'username': 'Имя',
+        'avatar': 'Аватар',
         'email': 'Email',
         'hashed_password': 'Парль',
         'bio': 'О себе',
@@ -49,6 +61,8 @@ class ArticleAdmin(ModelView, model=Article):
         'title_img': 'Титульная картинка',
         'description': 'Краткое описание',
         'content': 'Содержание',
+        'audio': 'Аудио-подкаст',
+        'video': 'Видео-подкаст',
         'author': 'Автор',
         'author_id': 'ID автора',
         'created_at': 'Дата создания',
@@ -56,12 +70,7 @@ class ArticleAdmin(ModelView, model=Article):
         'is_published': 'Опубликовано'
     }
 
-    column_list = [
-        'title', 
-        'author', 
-        'is_published',
-        'created_at'
-    ]
+    column_list = ['title',  'author', 'is_published', 'created_at']
     column_searchable_list = ['title']
     column_sortable_list = ['title', 'created_at']
     column_formatters = {

@@ -13,7 +13,8 @@ class User(Base):
     __tablename__ = 'users'
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True, comment='ID пользователя')
-    username: Mapped[str] = mapped_column(String(30), unique=True, index=True, comment='Логин пользователя')
+    username: Mapped[str] = mapped_column(String(30), unique=True, index=True, comment='Имя пользователя')
+    avatar: Mapped[str] = mapped_column(String(255), nullable=True, comment='Аватар')
     email: Mapped[str] = mapped_column(String(100), unique=True, index=True, comment='Email пользователя')
     hashed_password: Mapped[str] = mapped_column(String(300), comment='Хеш-пароль пользователя')
     bio: Mapped[Optional[str]] = mapped_column(Text(500), nullable=True, comment='О себе')

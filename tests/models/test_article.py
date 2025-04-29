@@ -10,9 +10,11 @@ async def test_create_article(db_session, test_article, test_user):
     """Test async function of creating article model."""
     assert test_article.id is not None
     assert test_article.title == 'Article title'
-    assert test_article.title_img == 'path/to/title_img.jpg'
+    assert test_article.title_img == 'path/media/articles/images/title_img.png'
     assert test_article.description == 'Article description'
     assert test_article.content == 'Article content'
+    assert test_article.audio == 'path/media/articles/audio/audio.mp3'
+    assert test_article.video == 'path/media/articles/video/video.mp4'
     assert test_article.author_id == test_user.id
     assert test_article.author.username == test_user.username
     assert test_article.is_published is True
@@ -38,7 +40,7 @@ async def test_read_article(db_session, test_article):
 async def test_update_article(db_session, test_article):
     """Test async function of updating article model."""
     test_article.title = 'New article title'
-    test_article.title_img = 'new/path/to/title_img.jpg'
+    test_article.title_img = 'new/path/media/articles/images/title_img.png'
     test_article.description = 'New article description'
     test_article.content = 'New article content'
 
@@ -46,7 +48,7 @@ async def test_update_article(db_session, test_article):
     await db_session.refresh(test_article)
 
     assert test_article.title == 'New article title'
-    assert test_article.title_img == 'new/path/to/title_img.jpg'
+    assert test_article.title_img == 'new/path/media/articles/images/title_img.png'
     assert test_article.description == 'New article description'
     assert test_article.content == 'New article content'
 
