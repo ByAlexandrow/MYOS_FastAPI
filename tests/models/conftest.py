@@ -6,6 +6,7 @@ from sqlalchemy.orm import sessionmaker, joinedload
 
 from app.models.user import User
 from app.models.article import Article
+from app.models.category import Category
 from app.database import Base
 
 TEST_DATABASE_URL = 'sqlite+aiosqlite:///:memory:'
@@ -48,6 +49,11 @@ async def test_user(db_session):
     await db_session.commit()
     await db_session.refresh(user)
     return user
+
+
+# @pytest.fixture(scope='function')
+# async def test_category(db_session, test_article):
+#     ...
 
 
 @pytest.fixture(scope='function')

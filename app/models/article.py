@@ -20,6 +20,8 @@ class Article(Base):
     video: Mapped[str] = mapped_column(String(255), nullable=True, comment='Видео-подкаст')
     author_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'), comment='ID автора')
     author = relationship('User', back_populates='articles')
+    category_id: Mapped[int] = mapped_column(Integer, ForeignKey('categories.id'), comment='ID категории')
+    category = relationship('Category', back_populates='articles')
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), comment='Дата создания статьи')
     updated_on: Mapped[bool] = mapped_column(Boolean, default=False, comment='Обновление статьи')
     is_published: Mapped[bool] = mapped_column(Boolean, default=False, comment='Опубликовать статью')
@@ -29,3 +31,4 @@ class Article(Base):
 
 
 from app.models.user import User
+from app.models.category import Category
