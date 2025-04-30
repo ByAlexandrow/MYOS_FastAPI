@@ -80,8 +80,10 @@ class ArticleAdmin(ModelView, model=Article):
         'video': 'Видео-подкаст',
         'author': 'Автор',
         'author_id': 'ID автора',
+        'category': 'Категория',
+        'category_id': 'ID категории',
         'created_at': 'Дата создания',
-        'updated_on': 'Обновление',
+        'updated': 'Обновление',
         'is_published': 'Опубликовано'
     }
 
@@ -90,7 +92,7 @@ class ArticleAdmin(ModelView, model=Article):
     column_sortable_list = ['title', 'created_at', 'is_published']
     column_formatters = {
         'created_at': lambda m, _: format_datetime(m.created_at),
-        'updated_on': lambda m, _: format_datetime(m.updated_on),
+        'updated': lambda m, _: format_datetime(m.updated),
         'author': lambda m, _: m.author.username if m.author else "Администратор",
         'is_published': lambda m, _: '✅' if m.is_published else '❌'
     }

@@ -17,8 +17,9 @@ TestSessionLocal = sessionmaker(
     autoflush=False,
     bind=test_engine,
     class_=AsyncSession,
-    expire_on_commit=True
+    expire_on_commit=False
 )
+
 
 @pytest.fixture(scope='function')
 async def setup_db():
@@ -32,7 +33,10 @@ async def setup_db():
 @pytest.fixture(scope='function')
 async def db_session(setup_db):
     async with TestSessionLocal() as session:
-        yield session
+        try:
+            yield session
+        finally:
+            await session.close()
 
 
 @pytest.fixture(scope='function')
@@ -51,13 +55,22 @@ async def test_user(db_session):
     return user
 
 
-# @pytest.fixture(scope='function')
-# async def test_category(db_session, test_article):
-#     ...
+@pytest.fixture(scope='function')
+async def test_category(db_session):
+    category = Category(
+        title='Category title',
+        title_img='path/media/articles/images/title_img.png',
+        description='Category description',
+        is_published=True
+    )
+    db_session.add(category)
+    await db_session.commit()
+    await db_session.refresh(category)
+    return category
 
 
 @pytest.fixture(scope='function')
-async def test_article(db_session, test_user):
+async def test_article(db_session, test_user, test_category):
     article = Article(
         title='Article title',
         title_img='path/media/articles/images/title_img.png',
@@ -66,16 +79,18 @@ async def test_article(db_session, test_user):
         audio='path/media/articles/audio/audio.mp3',
         video='path/media/articles/video/video.mp4',
         author_id=test_user.id,
-        updated_on=False,
+        category_id=test_category.id,
+        updated=False,
         is_published=True
     )
     db_session.add(article)
     await db_session.commit()
     await db_session.refresh(article)
+    
     result = await db_session.execute(
         select(Article)
-        .options(joinedload(Article.author))
+        .options(joinedload(Article.author), joinedload(Article.category))
         .filter_by(id=article.id)
     )
-    article = result.scalar_one()
+    article = result.unique().scalar_one()
     return article

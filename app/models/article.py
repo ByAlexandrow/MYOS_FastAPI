@@ -23,7 +23,7 @@ class Article(Base):
     category_id: Mapped[int] = mapped_column(Integer, ForeignKey('categories.id'), comment='ID категории')
     category = relationship('Category', back_populates='articles')
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), comment='Дата создания статьи')
-    updated_on: Mapped[bool] = mapped_column(Boolean, default=False, comment='Обновление статьи')
+    updated: Mapped[bool] = mapped_column(Boolean, default=False, comment='Обновление статьи')
     is_published: Mapped[bool] = mapped_column(Boolean, default=False, comment='Опубликовать статью')
 
     def __repr__(self) -> str:
