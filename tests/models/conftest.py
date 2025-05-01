@@ -47,7 +47,8 @@ async def test_user(db_session):
         email='user@email.com',
         hashed_password='user_hashed_password',
         bio='User bio field',
-        is_admin=False
+        is_admin=False,
+        is_banned=False
     )
     db_session.add(user)
     await db_session.commit()

@@ -25,17 +25,19 @@ class UserAdmin(ModelView, model=User):
         'email': 'Email',
         'hashed_password': 'Парль',
         'bio': 'О себе',
+        'is_banned': 'Бан',
         'is_admin': 'Администратор',
         'created_at': 'Дата регистрации',
         'articles': 'Статьи'
     }
 
-    column_list = ['username', 'email', 'is_admin']
+    column_list = ['username', 'email', 'is_admin', 'is_banned']
     column_searchable_list = ['username', 'email']
-    column_sortable_list = ['username', 'created_at']
+    column_sortable_list = ['username', 'created_at', 'is_banned']
     column_formatters = {
         'created_at': lambda m, _: format_datetime(m.created_at),
-        'is_admin': lambda m, _: '✅' if m.is_admin else '❌'
+        'is_admin': lambda m, _: '✅' if m.is_admin else '❌',
+        'is_banned': lambda m, _: '✅' if m.is_banned else '❌'
     }
 
 

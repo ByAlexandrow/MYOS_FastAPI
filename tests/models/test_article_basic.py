@@ -2,6 +2,7 @@ import pytest
 
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload
+from datetime import datetime
 
 from app.models.user import User
 from app.models.article import Article
@@ -32,6 +33,23 @@ async def test_article_media_fields(test_article):
 
 
 @pytest.mark.asyncio
+async def test_article_date_creation(test_article):
+    """Тест даты создания."""
+    assert isinstance(test_article.created_at, datetime)
+    assert test_article.created_at <= datetime.utcnow()
+
+
+@pytest.mark.asyncio
+async def test_article_retrieval(db_session, test_article):
+    """Тест получения статьи из БД."""
+    result = await db_session.execute(
+        select(Article).where(Article.id == test_article.id)
+    )
+    article = result.scalar_one()
+    assert article.title == 'Article title'
+
+
+@pytest.mark.asyncio
 async def test_artcile_author_relationship(test_article, test_user):
     """Тест связи статьи с автором."""
     assert test_article.author_id == test_user.id
@@ -47,7 +65,7 @@ async def test_article_category_relationship(test_article, test_category):
 
 @pytest.mark.asyncio
 async def test_article_publishing(db_session, test_article):
-    """тест публикации статьи."""
+    """Тест публикации статьи."""
     test_article.is_published = False
     
     await db_session.commit()

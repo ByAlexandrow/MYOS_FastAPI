@@ -2,8 +2,10 @@ import pytest
 
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload
+from datetime import datetime
 
 from app.models.user import User
+from app.models.article import Article
 
 
 @pytest.mark.asyncio
@@ -15,15 +17,27 @@ async def test_user_creation(test_user):
 
 
 @pytest.mark.asyncio
-async def test_user_defualt_fields(test_user):
-    """Тест дефолтный полей модели."""
+async def test_user_content_field(test_user):
+    """Тест полей содержания."""
+    assert test_user.bio == 'User bio field'
+
+
+@pytest.mark.asyncio
+async def test_user_mdeia_fields(test_user):
+    """Тест медиа-полей"""
     assert test_user.avatar == 'path/media/user/images/user_avatar.png'
-    assert test_user.created_at is not None
+
+
+@pytest.mark.asyncio
+async def test_user_date_creation(test_user):
+    """Тест даты создания."""
+    assert isinstance(test_user.created_at, datetime)
+    assert test_user.created_at <= datetime.utcnow()
 
 
 @pytest.mark.asyncio
 async def test_user_retrieval(db_session, test_user):
-    """Получение пользователя из БД."""
+    """Тест получения пользователя из БД."""
     result = await db_session.execute(
         select(User).where(User.id == test_user.id)
     )
@@ -32,8 +46,8 @@ async def test_user_retrieval(db_session, test_user):
 
 
 @pytest.mark.asyncio
-async def test_user_relationship(db_session, test_article, test_user):
-    """Тест связи пользователя со статьями."""
+async def test_user_one_article_relationship(db_session, test_user, test_article):
+    """Тест связи пользователя с одной статьей."""
     result = await db_session.execute(
         select(User).options(joinedload(User.articles))
         .where(User.id == test_user.id)
@@ -41,7 +55,43 @@ async def test_user_relationship(db_session, test_article, test_user):
     user = result.unique().scalar_one()
 
     assert len(user.articles) == 1
-    assert user.articles[0].title == 'Article title'
+    assert user.articles[0].title == test_article.title
+
+
+@pytest.mark.asyncio
+async def test_user_articles_relationship(db_session, test_user, test_category):
+    """Тест связи пользователя с несколькими статьями."""
+    article_1 = Article(
+        title="Article 1",
+        description="Description 1",
+        content="Content 1",
+        title_img="/img1.jpg",
+        category_id=test_category.id,
+        is_published=True,
+        author_id=test_user.id
+    )
+    article_2 = Article(
+        title="Article 2",
+        description="Description 2",
+        content="Content 2",
+        title_img="/img2.jpg",
+        category_id=test_category.id,
+        is_published=True,
+        author_id=test_user.id
+    )
+
+    db_session.add_all([article_1, article_2])
+    await db_session.commit()
+
+    result = await db_session.execute(
+        select(User)
+        .options(joinedload(User.articles))
+        .where(User.id == test_user.id)
+    )
+    user = result.unique().scalar_one()
+
+    assert len(user.articles) == 2
+    assert {a.title for a in user.articles} == {"Article 1", "Article 2"}
 
 
 @pytest.mark.asyncio
