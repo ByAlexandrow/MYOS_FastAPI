@@ -39,6 +39,9 @@ class UserAdmin(ModelView, model=User):
         'is_admin': lambda m, _: '✅' if m.is_admin else '❌',
         'is_banned': lambda m, _: '✅' if m.is_banned else '❌'
     }
+
+    form_widget_args = {'created_at': {'readonly': True}}
+
     edit_template = "sqladmin/custom_edit.html"
     create_template = "sqladmin/custom_create.html"
 
@@ -59,13 +62,15 @@ class CategoryAdmin(ModelView, model=Category):
         'is_published': 'Опубликовать'
     }
 
-    column_list = ['title', 'is_published']
+    column_list = ['title', 'description', 'is_published']
     column_searchable_list = ['title']
     column_sortable_list = ['title', 'created_at', 'is_published']
     column_formatters = {
         'created_at': lambda m, _: format_datetime(m.created_at),
         'is_published': lambda m, _: '✅' if m.is_published else '❌'
     }
+
+    form_widget_args = {'created_at': {'readonly': True}}
 
 
 class ArticleAdmin(ModelView, model=Article):
@@ -100,6 +105,9 @@ class ArticleAdmin(ModelView, model=Article):
         'author': lambda m, _: m.author.username if m.author else "Администратор",
         'is_published': lambda m, _: '✅' if m.is_published else '❌'
     }
+
+    form_widget_args = {'created_at': {'readonly': True}}
+
     edit_template = "sqladmin/custom_edit.html"
     create_template = "sqladmin/custom_create.html"
 

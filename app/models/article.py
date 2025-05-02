@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Integer, String, Text, Boolean, ForeignKey, DateTime
+from sqlalchemy import Integer, String, Text, Boolean, ForeignKey, DateTime, event
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 
@@ -22,12 +22,23 @@ class Article(Base):
     author = relationship('User', back_populates='articles')
     category_id: Mapped[int] = mapped_column(Integer, ForeignKey('categories.id'), comment='ID категории')
     category = relationship('Category', back_populates='articles')
-    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), comment='Дата создания статьи')
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), default=datetime.utcnow, comment='Дата создания статьи')
     updated: Mapped[bool] = mapped_column(Boolean, default=False, comment='Обновление статьи')
     is_published: Mapped[bool] = mapped_column(Boolean, default=False, comment='Опубликовать статью')
 
+
     def __repr__(self) -> str:
         return f'{self.title}'
+
+
+@event.listens_for(Article, 'before_update')
+def before_user_update(mapper, connection, target):
+    current_created_at = connection.execute(
+        Article.__table__.select().with_only_columns(Article.created_at).where(Article.id == target.id)
+    ).scalar_one_or_none()
+
+    if target.created_at and current_created_at != target.created_at:
+        target.created_at = current_created_at
 
 
 from app.models.user import User
