@@ -23,7 +23,7 @@ init_admin(app)
 templates = Jinja2Templates(directory='app/templates')
 
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
-app.mount("/media", StaticFiles(directory="static/media"), name="media")
+# app.mount("/media", StaticFiles(directory="static/media"), name="media")
 
 
 @app.get("/", response_class=HTMLResponse, name='homepage:index')

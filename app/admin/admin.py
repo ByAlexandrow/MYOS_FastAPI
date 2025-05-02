@@ -39,6 +39,8 @@ class UserAdmin(ModelView, model=User):
         'is_admin': lambda m, _: '✅' if m.is_admin else '❌',
         'is_banned': lambda m, _: '✅' if m.is_banned else '❌'
     }
+    edit_template = "sqladmin/custom_edit.html"
+    create_template = "sqladmin/custom_create.html"
 
 
 class CategoryAdmin(ModelView, model=Category):
@@ -98,6 +100,8 @@ class ArticleAdmin(ModelView, model=Article):
         'author': lambda m, _: m.author.username if m.author else "Администратор",
         'is_published': lambda m, _: '✅' if m.is_published else '❌'
     }
+    edit_template = "sqladmin/custom_edit.html"
+    create_template = "sqladmin/custom_create.html"
 
 
 def init_admin(app):
@@ -107,9 +111,9 @@ def init_admin(app):
         engine=engine,
         title='Admin Work Panel',
         base_url='/admin',
-        templates_dir='templates/admin',
+        templates_dir='app/templates',
         logo_url='/static/img/logo/logo.svg',
-        favicon_url="/static/img/favicon/favicon.ico"
+        favicon_url="/static/img/favicon/favicon.ico",
     )
     admin.add_view(UserAdmin)
     admin.add_view(CategoryAdmin)
