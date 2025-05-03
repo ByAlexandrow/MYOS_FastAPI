@@ -64,7 +64,7 @@ class CategoryAdmin(ModelView, model=Category):
 
     column_list = ['title', 'description', 'is_published']
     column_searchable_list = ['title']
-    column_sortable_list = ['title', 'created_at', 'is_published']
+    column_sortable_list = ['title', 'is_published']
     column_formatters = {
         'created_at': lambda m, _: format_datetime(m.created_at),
         'is_published': lambda m, _: '✅' if m.is_published else '❌'
@@ -96,12 +96,12 @@ class ArticleAdmin(ModelView, model=Article):
         'is_published': 'Опубликовано'
     }
 
-    column_list = ['title',  'author', 'is_published', 'created_at']
+    column_list = ['title',  'author', 'is_published', 'created_at', 'updated']
     column_searchable_list = ['title']
     column_sortable_list = ['title', 'created_at', 'is_published']
     column_formatters = {
         'created_at': lambda m, _: format_datetime(m.created_at),
-        'updated': lambda m, _: format_datetime(m.updated),
+        'updated': lambda m, _: '✅' if m.updated else '❌',
         'author': lambda m, _: m.author.username if m.author else "Администратор",
         'is_published': lambda m, _: '✅' if m.is_published else '❌'
     }

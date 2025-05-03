@@ -15,7 +15,7 @@ class Article(Base):
     title: Mapped[str] = mapped_column(String(25), unique=True, index=True, comment='Название статьи')
     title_img: Mapped[str] = mapped_column(String(255), comment='Титульная картинка')
     description: Mapped[str] = mapped_column(String(50), nullable=False, comment='Краткое описание статьи')
-    content: Mapped[str] = mapped_column(Text, comment='Содержание статьи')
+    content: Mapped[str] = mapped_column(Text(), nullable=True, comment='Содержание статьи')
     audio: Mapped[str] = mapped_column(String(255), nullable=True, comment='Аудио-подкаст')
     video: Mapped[str] = mapped_column(String(255), nullable=True, comment='Видео-подкаст')
     author_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'), comment='ID автора')
@@ -23,7 +23,7 @@ class Article(Base):
     category_id: Mapped[int] = mapped_column(Integer, ForeignKey('categories.id'), comment='ID категории')
     category = relationship('Category', back_populates='articles')
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), default=datetime.utcnow, comment='Дата создания статьи')
-    updated: Mapped[bool] = mapped_column(Boolean, default=False, comment='Обновление статьи')
+    updated: Mapped[bool] = mapped_column(Boolean, default=False, comment='Обновить статью')
     is_published: Mapped[bool] = mapped_column(Boolean, default=False, comment='Опубликовать статью')
 
 
